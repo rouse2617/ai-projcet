@@ -17,6 +17,7 @@ import SimilarQuotes from './SimilarQuotes';
 import QuoteHistory from './QuoteHistory';
 import FileUploader from './FileUploader';
 import DfmAnalysis from './DfmAnalysis';
+import { exportMoldQuotePdf } from '@/lib/pdfExport';
 
 const defaultInput: MoldCostInput = {
   projectName: '',
@@ -293,18 +294,26 @@ export default function MoldCostCalculator() {
                 <div><span className="text-blue-300">加工费占比</span><p className="text-lg font-semibold">{machiningRatio.toFixed(0)}%</p></div>
                 <div><span className="text-blue-300">材料费占比</span><p className="text-lg font-semibold">{result.subtotal > 0 ? ((result.totalMaterialCost + result.moldBaseCost) / result.subtotal * 100).toFixed(0) : 0}%</p></div>
               </div>
-              {/* 保存按钮 */}
-              <button
-                onClick={handleSave}
-                disabled={saveStatus === 'saved'}
-                className={`mt-4 w-full py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  saveStatus === 'saved'
-                    ? 'bg-green-500 text-white cursor-default'
-                    : 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm'
-                }`}
-              >
-                {saveStatus === 'saved' ? '✓ 已保存到历史库' : '💾 保存此报价'}
-              </button>
+              {/* 保存 & 导出按钮 */}
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={handleSave}
+                  disabled={saveStatus === 'saved'}
+                  className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    saveStatus === 'saved'
+                      ? 'bg-green-500 text-white cursor-default'
+                      : 'bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm'
+                  }`}
+                >
+                  {saveStatus === 'saved' ? '✓ 已保存' : '💾 保存报价'}
+                </button>
+                <button
+                  onClick={() => exportMoldQuotePdf(input, result)}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-white text-blue-700 hover:bg-blue-50 transition-all"
+                >
+                  📄 导出 PDF
+                </button>
+              </div>
             </div>
 
             {/* 交期 & 工程师复核 */}
