@@ -256,9 +256,88 @@ npm run dev
 # 访问 http://localhost:3000
 ```
 
-## 构建部署
+## 服务器部署
+
+当前部署在 Ubuntu 22.04 服务器上，使用 Node.js + pm2 + nginx 方案。
+
+### 环境要求
+
+- Node.js >= 20
+- npm >= 10
+- nginx
+- pm2（全局安装）
+
+### 部署步骤
 
 ```bash
+# 1. 安装 Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y nodejs
+
+# 2. 安装 pm2 和 nginx
+npm install -g pm2
+apt-get install -y nginx
+
+# 3. 克隆代码
+git clone https://github.com/rouse2617/ai-projcet.git /opt/mold-cost-estimator
+cd /opt/mold-cost-estimator
+
+# 4. 安装依赖 & 构建
+npm install
 npm run build
-npm start
+
+# 5. 用 pm2 启动（端口 3000）
+pm2 start npm --name mold-app -- start -- -p 3000
+pm2 save
+pm2 startup
+```
+
+### nginx 反向代理配置
+
+创建 `/etc/nginx/sites-available/mold-app`：
+
+```nginx
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+启用配置：
+
+```bash
+rm -f /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/mold-app /etc/nginx/sites-enabled/mold-app
+nginx -t
+systemctl restart nginx
+```
+
+### 更新部署
+
+```bash
+cd /opt/mold-cost-estimator
+git pull
+npm install
+npm run build
+pm2 restart mold-app
+```
+
+### 常用运维命令
+
+```bash
+pm2 status          # 查看进程状态
+pm2 logs mold-app   # 查看日志
+pm2 restart mold-app # 重启应用
+pm2 stop mold-app   # 停止应用
 ```
