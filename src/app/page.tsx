@@ -91,29 +91,30 @@ export default function Home() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 mb-6">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs text-blue-700 font-medium">AI 驱动 · 专为模具/模胚行业打造</span>
+              <span className="text-xs text-blue-700 font-medium">AI 驱动 · 专为模架/模配/精密加工行业打造</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 tracking-tight leading-tight mb-5">
-              上传图纸，<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">秒级估价</span>
+              上传图纸，<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">防漏算 · 快回价</span>
             </h1>
             <p className="text-base sm:text-lg text-gray-500 leading-relaxed mb-10 max-w-2xl mx-auto">
-              告别 Excel 手工算价。AI 自动识别图纸特征，精准计算模具成本，让报价从 3 天缩短到 3 分钟。
+              AI 自动识别图纸孔位、公差和加工特征，精准核算每一项加工费用。<br className="hidden sm:block" />
+              不漏一个孔，不亏一分钱，报价从 3 天缩短到 3 分钟。
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
               <button onClick={() => setView('mold')} className="group bg-white rounded-2xl border border-gray-200 p-6 text-left hover:border-blue-300 hover:shadow-lg transition-all">
                 <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                   <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">模具成本估算</h3>
-                <p className="text-sm text-gray-500 mb-3">上传图纸或填写参数，AI 自动计算全部成本</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">模架 / 加工件报价</h3>
+                <p className="text-sm text-gray-500 mb-3">上传图纸或填写参数，AI 自动识别孔位、核算加工费，防漏算</p>
                 <span className="flex items-center gap-1.5 text-sm text-blue-600 font-medium">开始报价 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></span>
               </button>
               <button onClick={() => setView('injection')} className="group bg-white rounded-2xl border border-gray-200 p-6 text-left hover:border-emerald-300 hover:shadow-lg transition-all">
                 <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-100 transition-colors">
                   <svg className="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">注塑件成本计算</h3>
-                <p className="text-sm text-gray-500 mb-3">计算单件生产成本，含量产经济性分析</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">注塑件 / 批量件报价</h3>
+                <p className="text-sm text-gray-500 mb-3">计算单件生产成本，含材料、机台、模具分摊、量产经济性分析</p>
                 <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium">开始计算 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></span>
               </button>
             </div>
@@ -126,17 +127,17 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20">
           <div className="text-center mb-14">
             <span className="text-xs font-semibold text-blue-600 tracking-widest uppercase">Product</span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-3">从图纸到报价，全流程 AI 赋能</h2>
-            <p className="text-sm text-gray-500 max-w-xl mx-auto">不只是计算器，而是学习你工厂报价经验的智能助手。每次报价自动积累数据，系统越用越准。</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-3">防漏算 · 快回价 · 省人工</h2>
+            <p className="text-sm text-gray-500 max-w-xl mx-auto">AI 自动识别图纸孔位和加工特征，学习你工厂的报价经验，每次报价自动积累数据，系统越用越准。</p>
           </div>
 
           {/* 核心流程 */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-16">
             {[
-              { step: '01', icon: '📁', title: '上传文件', desc: '支持 Excel 报价模板、2D 图纸（PDF/DWG）、3D 模型（STEP/STL）' },
-              { step: '02', icon: '🤖', title: 'AI 智能识别', desc: '自动提取尺寸、材料、穴数、公差等关键参数，置信度标注' },
-              { step: '03', icon: '💰', title: '秒级估价', desc: '精准计算模架、钢材、加工、热处理等全部成本，DFM 风险提示' },
-              { step: '04', icon: '📄', title: '输出报价单', desc: '专业报价单导出，历史归档，相似件匹配，越用越准' },
+              { step: '01', icon: '📁', title: '上传图纸', desc: '支持 Excel 报价模板、2D 图纸（PDF/DWG）、3D 模型（STEP/STL）' },
+              { step: '02', icon: '🤖', title: 'AI 孔位识别', desc: '自动识别顶针孔、螺丝孔、水路孔、导柱孔，逐个计数，不漏一个' },
+              { step: '03', icon: '💰', title: '精准核价', desc: '按孔径×深度×公差自动核算 CNC 工时，加上材料、磨床、热处理等全部成本' },
+              { step: '04', icon: '📄', title: '输出报价单', desc: '一键导出 PDF 报价单，历史归档，相似件匹配，越用越准' },
             ].map((item, i) => (
               <div key={item.step} className="relative bg-gray-50 rounded-xl p-6 hover:bg-blue-50/50 transition-colors">
                 {i < 3 && <div className="hidden sm:block absolute top-1/2 -right-2 w-4 h-px bg-gray-300" />}
@@ -152,13 +153,13 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { icon: '📁', title: '智能文件识别', desc: 'Excel / 2D图纸 / 3D模型，AI 自动提取参数', tag: '已上线' },
-              { icon: '🔍', title: 'DFM 制造性分析', desc: '壁厚、拔模、倒扣、热流道等 7 项风险检测', tag: '已上线' },
-              { icon: '🧠', title: '相似件匹配', desc: '历史库中找最相似模具，参考过去赚钱的报价', tag: '已上线' },
+              { icon: '🔴', title: 'AI 孔位识别', desc: '自动识别顶针孔、螺丝孔、水路孔，逐个计数防漏算', tag: '已上线' },
+              { icon: '🔍', title: 'DFM 制造性分析', desc: '孔位漏算预警、深孔风险、精密孔公差提醒等 10+ 项检测', tag: '已上线' },
+              { icon: '🧠', title: '相似件匹配', desc: '历史库中找最相似模架，参考过去赚钱的报价', tag: '已上线' },
               { icon: '📊', title: '量产经济性', desc: '6 档产量对比，自动标注最优生产批量', tag: '已上线' },
               { icon: '📋', title: '报价历史管理', desc: '自动归档、搜索、复用，数据越用越值钱', tag: '已上线' },
+              { icon: '📄', title: 'PDF 报价单', desc: '一键导出专业报价单，带成本明细和盖章位', tag: '已上线' },
               { icon: '👨‍🔧', title: '工程师复核', desc: '复杂件自动提示需人工复核，避免过度承诺', tag: '开发中' },
-              { icon: '📄', title: 'PDF 报价单', desc: '一键导出专业报价单，带公司 logo 和盖章位', tag: '即将上线' },
-              { icon: '🔗', title: 'ERP 对接', desc: 'REST API 一键推送到工厂现有 ERP 系统', tag: '规划中' },
             ].map((item) => (
               <div key={item.title} className="bg-gray-50 rounded-xl p-5">
                 <span className="text-2xl">{item.icon}</span>
@@ -243,12 +244,12 @@ export default function Home() {
             </div>
             <div className="divide-y divide-gray-100">
               {[
+                { pain: '图纸上几百个孔，报价员数漏了，加工完才发现亏钱', solution: 'AI 自动识别图纸上所有孔位（顶针孔、螺丝孔、水路孔、导柱孔），逐个计数，逐个核价，不漏一个', icon: '🔴' },
                 { pain: '报价靠老师傅拍脑袋，算错了亏钱，算高了丢单', solution: 'AI 学习你工厂的历史报价数据，自动给出精准成本区间，每单利润一目了然', icon: '🎯' },
-                { pain: '一套模具报价要 3-7 天，客户等不起', solution: '上传图纸 3 分钟出报价，支持 Excel/2D/3D 多种格式，响应速度快人一步', icon: '⚡' },
-                { pain: '老员工离职，报价经验全带走了', solution: '每次报价自动存档，经验沉淀为公司数字资产，新人也能按标准报价', icon: '🏦' },
-                { pain: '钢材涨价了，老报价跟不上', solution: '材料价格一键更新，所有在谈报价自动重算，哪些单还赚钱一眼看到', icon: '📈' },
-                { pain: '同类型复购单还要从头算', solution: '相似件匹配：新单子进来，自动找到历史库里最像的模具，参考上次报价', icon: '🔄' },
-                { pain: '不知道报价到底准不准', solution: 'DFM 制造性分析 + 报价偏差预警，系统自动检查风险，避免漏项', icon: '🛡️' },
+                { pain: '客户发来图纸催报价，3 天才回复，客户早找别家了', solution: '上传图纸 3 分钟出报价，支持 PDF/DWG/Excel，响应速度快人一步', icon: '⚡' },
+                { pain: '老员工离职，报价经验全带走了，新人上手要半年', solution: '每次报价自动存档，经验沉淀为公司数字资产，新人也能按标准报价', icon: '🏦' },
+                { pain: '钢材涨价了，老报价跟不上，接了单才发现亏本', solution: '材料价格一键更新，所有在谈报价自动重算，哪些单还赚钱一眼看到', icon: '📈' },
+                { pain: '36 台 CNC 是重资产，报价慢 = 丢单 = 机器闲置 = 亏钱', solution: '快速精准报价提高接单率，相似件匹配复用历史数据，CNC 利用率最大化', icon: '🏭' },
               ].map((item) => (
                 <div key={item.pain} className="flex items-start gap-4 px-7 py-5 hover:bg-gray-50 transition-colors">
                   <span className="text-2xl shrink-0 mt-0.5">{item.icon}</span>
@@ -278,8 +279,8 @@ export default function Home() {
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-7">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">我们的使命</h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  让每一家模具工厂都能用上 AI 报价工具。不需要百万级的 ERP 投入，不需要专业 IT 团队，打开浏览器就能用。
-                  我们相信，模具行业的数字化不应该只属于大厂，中小企业同样值得拥有精准、高效的报价能力。
+                  让每一家模架工厂都能用上 AI 报价工具。不需要百万级的 ERP 投入，不需要专业 IT 团队，打开浏览器就能用。
+                  我们相信，模架/模配行业的数字化不应该只属于大厂，中小企业同样值得拥有精准、高效的报价能力。
                 </p>
               </div>
 
@@ -367,8 +368,8 @@ export default function Home() {
       {/* CTA */}
       <section className="border-t border-gray-100 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">准备好告别 Excel 报价了吗？</h2>
-          <p className="text-sm text-gray-500 mb-8">免费试用，无需安装，打开浏览器即可开始</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">准备好告别 Excel 数孔报价了吗？</h2>
+          <p className="text-sm text-gray-500 mb-8">防漏算 · 快回价 · 省人工，免费试用，打开浏览器即可开始</p>
           <button onClick={() => setView('mold')} className="bg-blue-600 text-white px-8 py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20">
             立即开始报价 →
           </button>
@@ -386,7 +387,7 @@ export default function Home() {
                 </div>
                 <span className="text-sm font-bold text-gray-900">舒瀚科技</span>
               </div>
-              <p className="text-xs text-gray-400 leading-relaxed">模具/模胚行业 AI 智能报价系统，让每一家模具工厂都能用上 AI。</p>
+              <p className="text-xs text-gray-400 leading-relaxed">模架/模配/精密加工行业 AI 智能报价系统，让每一家工厂都能用上 AI。</p>
             </div>
             <div>
               <h4 className="text-xs font-semibold text-gray-900 mb-3">产品</h4>

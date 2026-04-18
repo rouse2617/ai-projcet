@@ -13,6 +13,57 @@ interface DfmItem {
 function analyzeDfm(input: MoldCostInput): DfmItem[] {
   const items: DfmItem[] = [];
 
+  // ===== 孔位漏算风险（模架/模配核心检测） =====
+  const totalCncMinutes = input.cncHours * 60;
+  const estimatedWeight = input.coreWeight + input.cavityWeight;
+
+  // 如果 CNC 工时相对重量偏低，可能漏算了孔位
+  if (estimatedWeight > 50 && input.cncHours < estimatedWeight * 0.8) {
+    items.push({
+      id: 'hole_undercount',
+      title: '⚠️ 孔位漏算风险',
+      severity: 'critical',
+      description: `模架重量 ${estimatedWeight}kg，但 CNC 工时仅 ${input.cncHours}h，工时/重量比偏低。非标模架通常有大量顶针孔、螺丝孔、水路孔，请确认是否全部计入。`,
+      suggestion: '建议逐项核对图纸孔位清单：顶针孔、螺丝孔（含丝牙）、水路孔（含深孔）、导柱孔、定位孔。漏算 10 个孔可能导致亏损 ¥500-2000。',
+    });
+  }
+
+  // 深孔加工风险
+  if (input.cncHours > 60 && input.moldBaseHeight > 300) {
+    items.push({
+      id: 'deep_hole',
+      title: '深孔加工风险',
+      severity: 'warning',
+      description: `模架高度 ${input.moldBaseHeight}mm，水路孔深径比可能超过 15:1`,
+      suggestion: '深孔加工需要专用枪钻或深孔钻，排屑困难，建议预留 30% 工时余量并确认设备能力',
+    });
+  }
+
+  // 精密孔公差风险
+  if (input.grindingHours > 20) {
+    items.push({
+      id: 'precision_holes',
+      title: '精密孔公差提醒',
+      severity: 'info',
+      description: '磨床工时较高，可能有大量 H6/H7 精密孔（导柱孔、顶针孔）',
+      suggestion: '精密孔建议使用铰刀精加工，CNC 预留 0.02-0.05mm 余量给磨床/铰孔',
+    });
+  }
+
+  // 螺纹孔遗漏检测
+  if (estimatedWeight > 30 && input.cncHours > 0) {
+    const screwHoleEstimate = Math.round(estimatedWeight * 0.3);
+    items.push({
+      id: 'screw_holes',
+      title: '螺纹孔核查',
+      severity: 'info',
+      description: `按模架重量估算，可能有 ${screwHoleEstimate}-${screwHoleEstimate + 10} 个螺丝孔（M6-M12），请确认丝牙规格和深度是否全部计入工时`,
+      suggestion: '每个螺纹孔含钻孔+攻丝约 3-5 分钟，20 个螺丝孔 = 1-1.5 小时 CNC 工时',
+    });
+  }
+
+  // ===== 原有检测项 =====
+
   // 倒扣/滑块风险
   if (input.hotRunnerCost > 0 && input.numberOfCavities >= 4) {
     items.push({

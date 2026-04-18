@@ -135,62 +135,120 @@ export function parseExcel(buffer: ArrayBuffer): ParseResult {
   };
 }
 
-// ===== 2D 图纸模拟解析 =====
+// ===== 2D 图纸模拟解析（模架/模配场景，含孔位识别） =====
+
+/** 孔位识别结果 */
+export interface HoleDetection {
+  type: string;
+  spec: string;
+  count: number;
+  depth: string;
+  tolerance: string;
+  estimatedTime: number; // 分钟
+}
 
 export function parse2DDrawing(fileName: string, fileSize: number): ParseResult {
-  // Demo: 根据文件名和大小模拟智能识别
   const lower = fileName.toLowerCase();
   const extractedFields: ExtractedField[] = [];
   const params: Partial<MoldCostInput> = {};
 
-  // 从文件名提取信息
   const nameWithoutExt = fileName.replace(/\.[^.]+$/, '');
   params.projectName = nameWithoutExt;
   extractedFields.push({ name: '项目名称', value: nameWithoutExt, confidence: 95, source: '文件名' });
 
-  // 模拟 OCR 识别结果
   const sizeKB = fileSize / 1024;
 
+  // 模架尺寸识别
   if (sizeKB > 500) {
-    // 大文件 → 复杂模具
-    params.numberOfCavities = 4;
-    params.coreWeight = 55;
-    params.cavityWeight = 48;
     params.moldBaseWidth = 500;
-    params.moldBaseLength = 600;
-    params.cncHours = 140;
-    params.edmHours = 70;
-    params.wireEdmHours = 35;
-    params.designHours = 70;
+    params.moldBaseLength = 700;
+    params.moldBaseHeight = 400;
+    params.coreWeight = 85;
+    params.cavityWeight = 70;
     extractedFields.push(
-      { name: '穴数', value: '4', confidence: 82, source: 'AI 图纸分析 - 型腔布局识别' },
-      { name: '模具尺寸', value: '500×600mm', confidence: 78, source: 'AI 图纸分析 - 外形尺寸标注' },
-      { name: '模芯重量', value: '55kg', confidence: 75, source: 'AI 图纸分析 - 体积估算' },
-      { name: '模腔重量', value: '48kg', confidence: 75, source: 'AI 图纸分析 - 体积估算' },
-      { name: 'CNC 工时', value: '140h', confidence: 70, source: 'AI 图纸分析 - 复杂度评估' },
-      { name: 'EDM 工时', value: '70h', confidence: 68, source: 'AI 图纸分析 - 深腔/窄槽识别' },
+      { name: '模架尺寸', value: '500×700×400mm', confidence: 88, source: 'AI 图纸分析 - 外形尺寸标注' },
+      { name: '材料', value: 'P20 预硬钢', confidence: 82, source: 'AI 图纸分析 - 标题栏材料标注' },
+      { name: '模架重量', value: '约 155kg', confidence: 78, source: 'AI 图纸分析 - 密度×体积估算' },
     );
+    params.coreSteelGrade = 'p20';
+    params.coreSteelPricePerKg = 25;
   } else {
-    // 小文件 → 简单模具
-    params.numberOfCavities = 2;
-    params.coreWeight = 25;
-    params.cavityWeight = 20;
     params.moldBaseWidth = 350;
     params.moldBaseLength = 450;
-    params.cncHours = 65;
-    params.edmHours = 30;
-    params.wireEdmHours = 15;
-    params.designHours = 30;
+    params.moldBaseHeight = 300;
+    params.coreWeight = 35;
+    params.cavityWeight = 28;
     extractedFields.push(
-      { name: '穴数', value: '2', confidence: 85, source: 'AI 图纸分析 - 型腔布局识别' },
-      { name: '模具尺寸', value: '350×450mm', confidence: 80, source: 'AI 图纸分析 - 外形尺寸标注' },
-      { name: '模芯重量', value: '25kg', confidence: 72, source: 'AI 图纸分析 - 体积估算' },
-      { name: '模腔重量', value: '20kg', confidence: 72, source: 'AI 图纸分析 - 体积估算' },
-      { name: 'CNC 工时', value: '65h', confidence: 70, source: 'AI 图纸分析 - 复杂度评估' },
+      { name: '模架尺寸', value: '350×450×300mm', confidence: 85, source: 'AI 图纸分析 - 外形尺寸标注' },
+      { name: '材料', value: '718 (3Cr2NiMo)', confidence: 80, source: 'AI 图纸分析 - 标题栏材料标注' },
+      { name: '模架重量', value: '约 63kg', confidence: 75, source: 'AI 图纸分析 - 密度×体积估算' },
     );
   }
 
-  // 模拟公差/表面识别
+  // ===== 核心：孔位自动识别 =====
+  const holes: HoleDetection[] = sizeKB > 500 ? [
+    { type: '顶针孔', spec: 'Ø6 H7', count: 32, depth: '通孔', tolerance: 'H7 (+0/+0.012)', estimatedTime: 3 },
+    { type: '顶针孔', spec: 'Ø8 H7', count: 16, depth: '通孔', tolerance: 'H7 (+0/+0.015)', estimatedTime: 4 },
+    { type: '顶针孔', spec: 'Ø10 H7', count: 8, depth: '通孔', tolerance: 'H7 (+0/+0.015)', estimatedTime: 5 },
+    { type: '螺丝孔', spec: 'M12×1.75', count: 24, depth: '25mm', tolerance: '6H', estimatedTime: 4 },
+    { type: '螺丝孔', spec: 'M8×1.25', count: 16, depth: '20mm', tolerance: '6H', estimatedTime: 3 },
+    { type: '水路孔', spec: 'Ø10', count: 12, depth: '深孔 180mm', tolerance: '±0.05', estimatedTime: 15 },
+    { type: '水路孔', spec: 'Ø8', count: 8, depth: '深孔 150mm', tolerance: '±0.05', estimatedTime: 12 },
+    { type: '导柱孔', spec: 'Ø30 H6', count: 4, depth: '通孔', tolerance: 'H6 (+0/+0.013)', estimatedTime: 8 },
+    { type: '导套孔', spec: 'Ø42 H7', count: 4, depth: '盲孔 45mm', tolerance: 'H7 (+0/+0.025)', estimatedTime: 10 },
+    { type: '定位孔', spec: 'Ø12 H7', count: 4, depth: '通孔', tolerance: 'H7 (+0/+0.018)', estimatedTime: 5 },
+    { type: '撬模槽', spec: '15×8mm', count: 4, depth: '12mm', tolerance: '±0.1', estimatedTime: 6 },
+  ] : [
+    { type: '顶针孔', spec: 'Ø6 H7', count: 16, depth: '通孔', tolerance: 'H7 (+0/+0.012)', estimatedTime: 3 },
+    { type: '顶针孔', spec: 'Ø8 H7', count: 8, depth: '通孔', tolerance: 'H7 (+0/+0.015)', estimatedTime: 4 },
+    { type: '螺丝孔', spec: 'M10×1.5', count: 12, depth: '22mm', tolerance: '6H', estimatedTime: 3.5 },
+    { type: '螺丝孔', spec: 'M6×1.0', count: 8, depth: '15mm', tolerance: '6H', estimatedTime: 2.5 },
+    { type: '水路孔', spec: 'Ø8', count: 6, depth: '深孔 120mm', tolerance: '±0.05', estimatedTime: 10 },
+    { type: '导柱孔', spec: 'Ø25 H6', count: 4, depth: '通孔', tolerance: 'H6 (+0/+0.013)', estimatedTime: 7 },
+    { type: '定位孔', spec: 'Ø10 H7', count: 2, depth: '通孔', tolerance: 'H7 (+0/+0.018)', estimatedTime: 4 },
+  ];
+
+  const totalHoles = holes.reduce((sum, h) => sum + h.count, 0);
+  const totalHoleMinutes = holes.reduce((sum, h) => sum + h.count * h.estimatedTime, 0);
+  const holeHours = Math.ceil(totalHoleMinutes / 60);
+
+  extractedFields.push(
+    { name: '🔴 孔位总数', value: `${totalHoles} 个`, confidence: 92, source: 'AI 孔位识别 - 圆形特征检测' },
+  );
+
+  // 按类型汇总
+  const holeTypes = new Map<string, number>();
+  holes.forEach((h) => holeTypes.set(h.type, (holeTypes.get(h.type) || 0) + h.count));
+  holeTypes.forEach((count, type) => {
+    extractedFields.push({
+      name: `  └ ${type}`,
+      value: `${count} 个`,
+      confidence: type === '水路孔' ? 85 : 90,
+      source: `AI 孔位识别 - ${type === '水路孔' ? '深孔路径追踪' : type === '螺丝孔' ? '螺纹标注识别' : '圆形特征匹配'}`,
+    });
+  });
+
+  extractedFields.push(
+    { name: '孔位加工工时', value: `约 ${holeHours} 小时`, confidence: 78, source: 'AI 工时估算 - 基于孔径×深度×精度' },
+  );
+
+  // 其他加工工时
+  const otherCncHours = sizeKB > 500 ? 45 : 20;
+  const grindingHours = sizeKB > 500 ? 25 : 12;
+  params.cncHours = holeHours + otherCncHours;
+  params.edmHours = sizeKB > 500 ? 15 : 5;
+  params.wireEdmHours = sizeKB > 500 ? 10 : 3;
+  params.grindingHours = grindingHours;
+  params.designHours = sizeKB > 500 ? 12 : 6;
+  params.numberOfCavities = 1;
+  params.moldBasePrice = sizeKB > 500 ? 0 : 0; // 非标模架自制，不买标准模架
+
+  extractedFields.push(
+    { name: 'CNC 总工时', value: `${params.cncHours}h（含孔位 ${holeHours}h + 铣面 ${otherCncHours}h）`, confidence: 75, source: 'AI 工时估算' },
+    { name: '磨床工时', value: `${grindingHours}h`, confidence: 72, source: 'AI 工时估算 - 六面精磨' },
+  );
+
+  // 公差/表面识别
   if (lower.includes('mirror') || lower.includes('镜面') || lower.includes('透明')) {
     params.surfaceTreatmentType = 'polish_spi_a1';
     params.surfaceTreatmentCost = 5000;
@@ -198,8 +256,22 @@ export function parse2DDrawing(fileName: string, fileSize: number): ParseResult 
     params.coreSteelPricePerKg = 70;
     extractedFields.push(
       { name: '表面要求', value: '镜面抛光 SPI-A1', confidence: 88, source: 'AI 图纸分析 - 表面粗糙度标注' },
-      { name: '推荐钢材', value: 'S136 (耐腐蚀/镜面)', confidence: 85, source: 'AI 智能推荐' },
     );
+  }
+
+  // 风险提示
+  const warnings: string[] = [
+    '2D 图纸识别为 AI 辅助结果，建议人工复核孔位数量和公差要求',
+  ];
+  const deepHoles = holes.filter((h) => h.depth.includes('深孔'));
+  if (deepHoles.length > 0) {
+    const deepCount = deepHoles.reduce((s, h) => s + h.count, 0);
+    warnings.push(`检测到 ${deepCount} 个深孔（水路孔），深径比较大，建议确认加工可达性和排屑方案`);
+  }
+  const h7Holes = holes.filter((h) => h.tolerance.includes('H7') || h.tolerance.includes('H6'));
+  if (h7Holes.length > 0) {
+    const precisionCount = h7Holes.reduce((s, h) => s + h.count, 0);
+    warnings.push(`检测到 ${precisionCount} 个精密孔（H6/H7 公差），建议使用铰刀精加工，预留工时余量`);
   }
 
   return {
@@ -207,7 +279,7 @@ export function parse2DDrawing(fileName: string, fileSize: number): ParseResult 
     source: '2d',
     params,
     extractedFields,
-    warnings: ['2D 图纸识别为 AI 辅助结果，建议人工复核关键参数'],
+    warnings,
   };
 }
 
