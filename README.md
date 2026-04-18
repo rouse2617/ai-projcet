@@ -1,36 +1,264 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 舒瀚科技 · 模具/模胚行业 AI 智能报价系统
 
-## Getting Started
+## 我们要做什么
 
-First, run the development server:
+为中国中小型模具/模胚工厂提供一套 **AI 驱动的智能报价 SaaS 系统**，解决行业三大核心痛点：
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **报价慢** — 一套模具报价从收到图纸到出报价单要 3-7 天，客户等不起
+- **算不准** — 靠老师傅经验拍价，漏项、算错导致亏单或丢单，隐性亏损每年数十万
+- **依赖人** — 报价经验全在 1-2 个核心员工脑子里，人走经验就没了，新人上手要半年以上
+
+**目标**：让模具厂老板打开浏览器，填几个参数，几分钟内拿到一份专业、准确、可追溯的报价单。系统越用越准，把老师傅的"手感"变成公司的数字资产。
+
+---
+
+## 产品定位
+
+| 维度　　 | 定位　　　　　　　　　　　　　　　　　　　　　　　　　　　　|
+| ----------| -------------------------------------------------------------|
+| 行业　　 | 注塑模具 / 模胚制造　　　　　　　　　　　　　　　　　　　　 |
+| 客户　　 | 中小型模具厂（10-200人，年产值 500-20000 万）　　　　　　　 |
+| 形态　　 | Web SaaS（浏览器直接用，无需安装）　　　　　　　　　　　　　|
+| 核心价值 | 报价提效 10 倍 + 成本算准 + 经验沉淀 + AI 越用越准　　　　　|
+| 差异化　 | 中国模具行业专属 + 学习每个工厂自己的报价经验（非通用公式） |
+
+### 产品理念（参考 Imnoo/Marvin 验证过的路径）
+
+> **不是替代老师傅，而是把老师傅的经验装进系统。**
+
+- 每次报价自动存档 → 积累工厂专属数据
+- 新单子进来 → 自动匹配历史相似件 → 参考过去赚钱的报价
+- 数据越多 → AI 越准 → 迁移成本越高 → 客户越离不开
+
+---
+
+## 标杆分析：Imnoo (瑞士)
+
+Imnoo 是目前全球最接近我们方向的产品，2017 年成立，服务 1000+ 家 CNC 加工厂。核心启发：
+
+| Imnoo 做对了什么　　　　　　　　　　　　　 | 我们怎么学　　　　　　　　　　　　　　 |
+| --------------------------------------------| ----------------------------------------|
+| "Marvin" AI 助理定位为"增强插件"而非替代人 | 同样定位：把老板的标准装进系统　　　　 |
+| 学习每个工厂自己的历史报价数据　　　　　　 | Phase 1 就开始自动存档，为 AI 积累数据 |
+| 相似件匹配（几秒找到历史库里最像的零件）　 | Phase 1 就做基础版相似件匹配　　　　　 |
+| 2D 图纸识别（DXF/DWG/PDF/扫描件）　　　　　| Phase 4 做，先用参数化输入切入　　　　 |
+| 定价 429-594 欧元/月　　　　　　　　　　　 | 我们 ¥499-1499/月，更适合国内市场　　　|
+
+**我们的差异化空间：**
+- Imnoo 做 CNC 车铣件，不做注塑模具/模胚 — 成本结构完全不同
+- Imnoo 不服务中国市场 — 没中文、不懂国内钢材/模架/费率
+- 国内中小模具厂 95% 还在用 Excel — 蓝海
+
+---
+
+## 当前进度（MVP v0.2）
+
+已完成的功能：
+
+- ✅ 模具成本估算（模架、钢材、CNC/EDM/线切割、热处理、表面处理、标准件、试模）
+- ✅ 注塑件单件成本计算（材料、机台、模具分摊、后处理、包装）
+- ✅ 12 种国内常用钢材牌号 + 14 种塑料材料 + 14 档注塑机吨位
+- ✅ 模具复杂度快速选择器（简单/中等/复杂/精密一键填参数）
+- ✅ 快速模式 / 专业模式切换
+- ✅ 环形饼图 + 条形图成本构成分析
+- ✅ 量产经济性分析（不同产量下单件成本对比）
+- ✅ 智能 Pro Tips（根据参数实时给出行业建议）
+- ✅ 报价自动存档（每次报价自动保存到本地历史库）
+- ✅ 相似件匹配（新报价时自动推荐历史库中结构相似的模具）
+- ✅ 报价历史面板（查看、搜索、复用历史报价）
+
+**技术栈**：Next.js + TypeScript + Tailwind CSS
+
+---
+
+## Roadmap
+
+### Phase 1：基础报价工具 + 数据沉淀（现在 → 第 2 个月）
+
+> 目标：让 5-10 个种子客户用起来，同时从第一天就开始积累数据
+
+**核心功能**
+- [ ] 用户注册/登录（手机号 + 微信扫码）
+- [ ] 报价单保存、历史记录查询（✅ 本地版已完成，需迁移到云端）
+- [ ] 相似件匹配推荐（✅ 基础版已完成，需接入真实数据库）
+- [ ] PDF 报价单导出（带公司 logo、盖章位）
+- [ ] 报价单模板自定义（不同客户不同格式）
+- [ ] 钢材价格实时更新（对接钢材行情 API 或手动维护）
+- [ ] 模架规格库（龙记、明利等品牌的标准规格 + 价格表）
+- [ ] 移动端适配（老板在外面用手机也能报价）
+- [ ] Excel 历史数据批量导入工具（帮客户把过去的报价导进来，快速冷启动 AI 数据）
+
+**数据沉淀设计（关键）**
+- [ ] 每次报价自动归档（项目名、参数、结果、时间戳）
+- [ ] 报价标签系统（按产品类型、客户、复杂度分类）
+- [ ] 报价 vs 实际成本回填入口（为 Phase 3 AI 训练准备数据）
+
+**技术**
+- [ ] PostgreSQL 数据库（用户、报价单、材料价格、历史数据）
+- [ ] 用户认证（NextAuth.js）
+- [ ] 部署上线（Vercel 或阿里云）
+
+---
+
+### Phase 2：智能推荐 + 协作（第 3-5 个月）
+
+> 目标：让系统越用越准，形成数据壁垒
+
+**功能**
+- [ ] 相似件匹配增强 — 基于多维向量（尺寸、穴数、钢材、滑块数、表面要求）的加权相似度搜索
+- [ ] 报价偏差预警 — 本次报价与历史同类单差异超过 15% 自动提醒
+- [ ] 成本回溯 — 报价 vs 实际成本对比，算清每单真实利润
+- [ ] 客户管理（客户档案、历史订单、报价记录）
+- [ ] 多用户协作（老板、报价员、设计师不同权限）
+- [ ] 报价审批流程（报价员出单 → 老板审批 → 发送客户）
+
+**技术**
+- [ ] Redis 缓存（材料价格、常用参数）
+- [ ] 全文搜索（历史报价快速检索）
+- [ ] 数据导入 ETL 管道
+
+---
+
+### Phase 3：AI 赋能（第 6-9 个月）
+
+> 目标：从"工具"升级为"智能助手"，像 Imnoo 的 Marvin 一样越用越准
+
+**功能**
+- [ ] AI 工时预测 — 基于工厂自己的历史数据训练 LightGBM/XGBoost 模型，自动预测 CNC/EDM 加工工时
+- [ ] AI 报价建议 — 输入模具基本参数，AI 直接给出报价区间和置信度
+- [ ] 每个工厂独立的 AI 模型 — 不是通用模型，而是学习每个客户自己的报价逻辑（Imnoo 验证过的核心策略）
+- [ ] 智能定价策略 — 根据客户类型、订单紧急度、产能利用率动态调整报价
+- [ ] 成本异常检测 — AI 自动发现报价中的异常项
+- [ ] 自然语言查询 — "上个月做的那个汽车灯罩模具报了多少钱？"
+
+**技术**
+- [ ] Python ML 服务（LightGBM / XGBoost）
+- [ ] 模型训练管道（定期用新数据重新训练，每个客户独立模型）
+- [ ] LLM 集成（自然语言查询）
+
+---
+
+### Phase 4：生态集成 + 图纸识别（第 10-12 个月）
+
+> 目标：成为模具厂的核心经营系统
+
+**功能**
+- [ ] 2D 图纸识别 — 上传 DWG/PDF/扫描件，AI 自动提取模具结构特征（参考 Imnoo 的多模态识别）
+- [ ] 3D 模型分析 — 上传 STEP/IGES，自动计算体积、重量、复杂度
+- [ ] ERP 对接 — 报价单一键推送到工厂现有 ERP 系统（REST API）
+- [ ] 供应商比价 — 钢材、标准件多供应商价格对比
+- [ ] BI 报表 — 月度/季度经营分析（报价成功率、利润率趋势、客户分析）
+- [ ] API 开放平台 — 让第三方系统调用报价能力
+
+---
+
+## 商业模式
+
+| 版本 | 月费 | 目标客户 | 核心功能 |
+|------|------|---------|---------|
+| 基础版 | ¥499/月 | 小型厂（10-50人） | 报价计算 + PDF导出 + 历史记录 + 相似件匹配 |
+| 专业版 | ¥1,499/月 | 中型厂（50-200人） | 基础版 + AI工时预测 + 多用户 + 客户管理 + 审批流 |
+| 企业版 | ¥3,999/月 | 大型厂（200+人） | 专业版 + 图纸识别 + ERP对接 + 独立AI模型 + API |
+
+**获客策略**：
+1. 行业人脉 → 5-10 个种子客户免费试用（换取历史数据导入）
+2. 行业展会（CME、Asiamold）→ 现场演示
+3. 口碑转介绍 → 模具行业圈子小，一个老板带三个老板
+4. 内容营销 → 模具报价知识分享（公众号/抖音）
+
+---
+
+## 关键里程碑
+
+| 时间　　 | 里程碑　　　| 衡量标准　　　　　　　　　　　　　 |
+| ----------| -------------| ------------------------------------|
+| Month 2　| MVP 上线　　| 5-10 个种子客户开始使用　　　　　　|
+| Month 3　| 数据冷启动　| 累计 500+ 条历史报价数据（含导入） |
+| Month 4　| 产品打磨　　| 种子客户留存率 > 70%　　　　　　　 |
+| Month 6　| 正式收费　　| 20+ 付费客户　　　　　　　　　　　 |
+| Month 9　| AI 功能上线 | 工时预测准确率 > 85%　　　　　　　 |
+| Month 12 | 规模化　　　| 50+ 付费客户，ARR ¥50万+　　　　　 |
+| Year 2　 | 行业标杆　　| 200+ 客户，ARR ¥300万+　　　　　　 |
+
+---
+
+## 竞争优势
+
+1. **行业专属** — 不是通用报价软件，只做模具/模胚，参数、术语、计算逻辑全部贴合行业实际
+2. **数据飞轮** — 每次报价自动积累数据 → AI 越用越准 → 客户越离不开 → 更多数据（Imnoo 验证过的核心壁垒）
+3. **轻量易用** — 浏览器打开就能用，不需要部署、不需要培训，比 ERP 轻 10 倍
+4. **中国本地化** — 国内钢材牌号、模架品牌、加工费率、税率全部适配，海外产品做不到
+5. **创始人背景** — 富士康制造经验 + 软件工程能力，既懂行业又能自己做产品
+6. **工厂专属 AI** — 不是通用模型，而是              # 输入框
+│   │   ├── SelectField.tsx             # 下拉选择
+│   │   └── SectionCard.tsx             # 折叠卡片
+│   └── lib/                  # 核心逻辑
+│       ├── types.ts          # 类型定义
+│       ├── data.ts           # 行业数据（钢材/材料/机台）
+│       ├── calculator.ts     # 计算引擎
+│       └── format.ts         # 格式化工具
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 本地开发
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd mold-cost-estimator
+npm install
+npm run dev──────────────────────────┤
+│              AI 服务 (Python)                 │
+│  LightGBM 工时预测 | 相似件向量搜索 | LLM     │
+│  每个客户独立模型 | 定期增量训练               │
+└─────────────────────────────────────────────┘
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 项目结构
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+mold-cost-estimator/
+├── src/
+│   ├── app/                  # Next.js 页面
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── globals.css
+│   ├── components/           # UI 组件
+│   │   ├── MoldCostCalculator.tsx      # 模具成本计算器
+│   │   ├── InjectionCostCalculator.tsx # 注塑件成本计算器
+│   │   ├── ComplexitySelector.tsx      # 复杂度快速选择
+│   │   ├── QuoteHistory.tsx            # 报价历史面板
+│   │   ├── SimilarQuotes.tsx           # 相似件匹配推荐
+│   │   ├── CostBreakdownChart.tsx      # 条形图
+│   │   ├── DonutChart.tsx              # 环形饼图
+│   │   ├── VolumeAnalysis.tsx          # 量产经济性分析
+│   │   ├── ProTip.tsx                  # 智能提示
+│   │   ├── InputField.tsx              # 输入框
+│   │   ├── SelectField.tsx             # 下拉选择
+│   │   └── SectionCard.tsx             # 折叠卡片
+│   └── lib/                  # 核心逻辑
+│       ├── types.ts          # 类型定义
+│       ├── data.ts           # 行业数据（钢材/材料/机台）
+│       ├── calculator.ts     # 计算引擎
+│       ├── quoteStore.ts     # 报价存储 & 相似件匹配引擎
+│       └── format.ts         # 格式化工具
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 本地开发
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd mold-cost-estimator
+npm install
+npm run dev
+# 访问 http://localhost:3000
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 构建部署
+
+```bash
+npm run build
+npm start
+```
