@@ -206,52 +206,6 @@ Imnoo 是目前全球最接近我们方向的产品，2017 年成立，服务 10
 ```bash
 cd mold-cost-estimator
 npm install
-npm run dev──────────────────────────┤
-│              AI 服务 (Python)                 │
-│  LightGBM 工时预测 | 相似件向量搜索 | LLM     │
-│  每个客户独立模型 | 定期增量训练               │
-└─────────────────────────────────────────────┘
-```
-
----
-
-## 项目结构
-
-```
-mold-cost-estimator/
-├── src/
-│   ├── app/                  # Next.js 页面
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── globals.css
-│   ├── components/           # UI 组件
-│   │   ├── MoldCostCalculator.tsx      # 模具成本计算器
-│   │   ├── InjectionCostCalculator.tsx # 注塑件成本计算器
-│   │   ├── ComplexitySelector.tsx      # 复杂度快速选择
-│   │   ├── QuoteHistory.tsx            # 报价历史面板
-│   │   ├── SimilarQuotes.tsx           # 相似件匹配推荐
-│   │   ├── CostBreakdownChart.tsx      # 条形图
-│   │   ├── DonutChart.tsx              # 环形饼图
-│   │   ├── VolumeAnalysis.tsx          # 量产经济性分析
-│   │   ├── ProTip.tsx                  # 智能提示
-│   │   ├── InputField.tsx              # 输入框
-│   │   ├── SelectField.tsx             # 下拉选择
-│   │   └── SectionCard.tsx             # 折叠卡片
-│   └── lib/                  # 核心逻辑
-│       ├── types.ts          # 类型定义
-│       ├── data.ts           # 行业数据（钢材/材料/机台）
-│       ├── calculator.ts     # 计算引擎
-│       ├── quoteStore.ts     # 报价存储 & 相似件匹配引擎
-│       └── format.ts         # 格式化工具
-```
-
----
-
-## 本地开发
-
-```bash
-cd mold-cost-estimator
-npm install
 npm run dev
 # 访问 http://localhost:3000
 ```
