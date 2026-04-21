@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  company   String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  quotes    Quote[]
+}
+
+model Quote {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  projectName String
+  partDesc    String   @default("")
+  /// 完整输入参数 JSON
+  inputJson   String
+  /// 计算结果 JSON
+  resultJson  String
+  /// 总报价金额
+  totalCost   Float
+  /// 特征向量 JSON（用于相似件匹配）
+  featuresJson String  @default("{}")
+  /// 标签
+  tags        String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
